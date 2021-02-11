@@ -28,55 +28,37 @@ object ClinvarVcfDriver {
     into:
       {{{
         {
-          "CHROM": "1",
-          "POS": 1049066,
+          "chromosome": "1",
+          "position": 1049066,
           "_id": "706774",
-          "REF": "G",
-          "ALT": "A",
+          "ref": "G",
+          "alt": "A",
           "clinvar_allele_id": "694996",
           "HGVS_expression": "NC_000001.11:g.1049066G>A",
           "variation_review_status": "criteria_provided,_single_submitter",
           "clinical_significance": "Benign",
           "allele_origin": [ "germline" ],
           "disease": [
-            {
-              "preferred_name": "Myasthenic_syndrome,_congenital,_8",
+            { "preferred_name": "Myasthenic_syndrome,_congenital,_8",
               "terms": [
-                {
-                  "database": "MONDO",
-                  "id": "MONDO:0014052"
-                },
-                {
-                  "database": "MedGen",
-                  "id": "C3808739"
-                },
-                {
-                  "database": "OMIM",
-                  "id": "615120"
-                }
-              ]
-            }
-          ],
+                { "database": "MONDO",
+                  "id": "MONDO:0014052" },
+                { "database": "MedGen",
+                  "id": "C3808739" },
+                { "database": "OMIM",
+                  "id": "615120" } ] } ],
           "genes": [
-            {
-              "symbol": "AGRN",
-              "entrez": "375790"
-            }
-          ],
+            { "symbol": "AGRN",
+              "entrez": "375790" } ],
           "molecular_consequences": [
-            {
-              "term": "SO:0001627",
-              "name": "intron_variant"
-            }
-          ],
+            { "term": "SO:0001627",
+              "name": "intron_variant" } ],
           "variant_type": {
             "name": "single_nucleotide_variant",
-            "term": "SO:0001483"
-          },
+            "term": "SO:0001483" },
           "AF": {
             "EXAC": 0.00007,
-            "1KGP": 0.00040
-          }
+            "1KGP": 0.00040 }
         }
       }}}
    */

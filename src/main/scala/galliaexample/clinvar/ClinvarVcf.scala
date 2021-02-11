@@ -13,6 +13,12 @@ object ClinvarVcf { // 210102155202
   // ===========================================================================
   def apply(head: HeadU): HeadU =
     head
+    
+      .rename(
+          'CHROM ~> 'chromosome,
+          'POS   ~> 'position,
+          'ALT   ~> 'alt,
+          'REF   ~> 'ref)
       .unnestAllFrom('INFO)
       .remove(RS)
 
