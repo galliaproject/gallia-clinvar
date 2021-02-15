@@ -93,7 +93,7 @@ object ClinvarVcf { // 210102155202
             .convert        ('AF).toNonRequired           // won't be required after t210122162650 is addressed
             .transformObject('AF).using {
               _ .convert(ESP, EXAC, `1KGP`).toNonRequired // won't be required after t210122162650 is addressed
-                .forLeafPaths(_ convert _ toDouble) }
+                .forLeafPaths(_.convert(_).toDouble) }
 
           // ---------------------------------------------------------------------------
           // other renamings
