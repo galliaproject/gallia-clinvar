@@ -1,11 +1,22 @@
 // gallia-clinvar
 
 // ===========================================================================
+// TODO: inherit these from core
+
+// ---------------------------------------------------------------------------
+lazy val scala213 = "2.13.4"
+lazy val scala212 = "2.12.13"
+
+// ---------------------------------------------------------------------------
+lazy val supportedScalaVersions = List(scala213, scala212)
+
+// ===========================================================================
 lazy val root = (project in file("."))
   .settings(
-    name         := "gallia-clinvar",
-    version      := "0.1.0",
-    scalaVersion := "2.13.4" /* TODO: inherit from core */)
+    name               := "gallia-clinvar",
+    version            := "0.1.0",
+    scalaVersion       := supportedScalaVersions.head,
+    crossScalaVersions := supportedScalaVersions)
   .dependsOn(RootProject(file("../gallia-core")))
 
 // ===========================================================================
