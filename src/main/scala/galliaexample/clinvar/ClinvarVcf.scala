@@ -34,6 +34,7 @@ object ClinvarVcf { // 210102155202
               newKey = disease_INCL))
 
           // ---------------------------------------------------------------------------
+          // "untuplify" -> see https://github.com/galliaproject/gallia-core#why-does-the-terminology-sometimes-sound-funny-or-full-on-neological
           .untuplify1b(CLNSIGINCL ~> 'clinical_significance_for_including)
             .withSplitters(SemanticSeparators.Pipe, SemanticSeparators.Colon)
               .asNewKeys(
@@ -116,6 +117,8 @@ object ClinvarVcf { // 210102155202
       .transform(_.objz(newKey.value)).using {
           // eg "MedGen:C3808739,OMIM:615120" - "Tag-value pairs of disease database name and identifier, e.g. OMIM:NNNNNN"
           _ .removeIfValueFor('terms).is(".")
+
+            // "untuplify" -> see https://github.com/galliaproject/gallia-core#why-does-the-terminology-sometimes-sound-funny-or-full-on-neological
             .untuplify1b('terms)
               .withSplitters(SemanticSeparators.Comma, EntrySplitter)
                 .asNewKeys(database, id) }
