@@ -49,7 +49,8 @@ For more information, see gallia-core [documentation](https://github.com/galliap
 }
 ```
 
-<a name="references">### Clinvar References
+<a name="references">
+### Clinvar References
 - __AMA__: _Landrum MJ, Lee JM, Riley GR, et al. ClinVar: public archive of relationships among sequence variation and human phenotype. Nucleic Acids Res. 2014;42(Database issue):D980-D985. doi:10.1093/nar/gkt1113_
 - __MLA__: _Landrum, Melissa J et al. “ClinVar: public archive of relationships among sequence variation and human phenotype.” Nucleic acids research vol. 42,Database issue (2014): D980-5. doi:10.1093/nar/gkt1113_
 - __APA__: _Landrum, M. J., Lee, J. M., Riley, G. R., Jang, W., Rubinstein, W. S., Church, D. M., & Maglott, D. R. (2014). ClinVar: public archive of relationships among sequence variation and human phenotype. Nucleic acids research, 42(Database issue), D980–D985. https://doi.org/10.1093/nar/gkt1113_
