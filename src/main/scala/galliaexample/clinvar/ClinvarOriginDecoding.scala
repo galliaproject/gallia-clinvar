@@ -47,7 +47,7 @@ object ClinvarOriginDecoding {
        .zipWithIndex              // eg for 11: [(1, 0), (1, 1), (0, 2), (1, 3)]
        .filter(_._1 == '1')       // eg for 11: [(1, 0), (1, 1),       , (1, 3)]
        .map   (_._2       )       // eg for 11: [    0 ,     1 ,             3 ]
-       .map(Math.pow(2, _).toInt) // eg for 11: [    1,      2 ,             8 ] -> the sum of which is indeed 11
+       .map(math.pow(2, _).toInt) // eg for 11: [    1,      2 ,             8 ] -> the sum of which is indeed 11
        .thn(subValues =>
          subValues
            .sorted
