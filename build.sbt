@@ -1,30 +1,30 @@
 // gallia-clinvar
 
 // ===========================================================================
-// TODO: inherit these from core
-
-// ---------------------------------------------------------------------------
-lazy val scala213 = "2.13.4"
-lazy val scala212 = "2.12.13"
-
-// ---------------------------------------------------------------------------
-lazy val supportedScalaVersions = List(scala213, scala212)
-
-// ===========================================================================
 lazy val root = (project in file("."))
   .settings(
-    name               := "gallia-clinvar",
-    version            := "0.1.0",
-    scalaVersion       := supportedScalaVersions.head,
-    crossScalaVersions := supportedScalaVersions)
-  .dependsOn(RootProject(file("../gallia-core")))
+    organizationName     := "Gallia Project",
+    organization         := "io.github.galliaproject", // *must* match groupId for sonatype
+    name                 := "gallia-clinvar",
+    version              := "0.3.0",    
+    homepage             := Some(url("https://github.com/galliaproject/gallia-clinvar")),
+    scmInfo              := Some(ScmInfo(
+        browseUrl  = url("https://github.com/galliaproject/gallia-clinvar"),
+        connection =     "scm:git@github.com:galliaproject/gallia-clinvar.git")),
+    licenses             := Seq("BSL 1.1" -> url("https://github.com/galliaproject/gallia-clinvar/blob/master/LICENSE")),
+    description          := "A Scala library for data manipulation" )
+  .settings(GalliaCommonSettings.mainSettings:_*)
+
+// ===========================================================================    
+lazy val galliaVersion = "0.3.0"
+
+// ---------------------------------------------------------------------------
+libraryDependencies += "io.github.galliaproject" %% "gallia-core" % galliaVersion // in turns depends on aptus-core
 
 // ===========================================================================
-// TODO: more + inherit from core
-scalacOptions in Compile ++=
-  Seq("-Ywarn-value-discard") ++ 
-  (scalaBinaryVersion.value match {
-    case "2.13" => Seq("-Ywarn-unused:imports")
-    case _      => Seq("-Ywarn-unused-import" ) })
+sonatypeRepository     := "https://s01.oss.sonatype.org/service/local"
+sonatypeCredentialHost :=         "s01.oss.sonatype.org"        
+publishMavenStyle      := true
+publishTo              := sonatypePublishToBundle.value
 
 // ===========================================================================
