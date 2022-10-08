@@ -1,7 +1,7 @@
 package galliaexample
 package clinvar
 
-import aptus.Anything_ // for .thn()
+import scala.util.chaining._ // for .pipe
 import gallia._
 
 // ===========================================================================
@@ -66,11 +66,18 @@ object ClinvarVcfDriver {
 
   // ===========================================================================
   def main(args: Array[String]) {
-    InputFile
+    apply(InputFile).write(OutputFile)
 
-        .stream(_.lines.iteratorMode)
+    ()
+  }
+  
+  // ---------------------------------------------------------------------------
+  def apply(path: String): HeadS =
+    path
+    
+        .stream(_.lines)
         .logProgress(1000)
-        .thn(vcf.Vcf.processLines(
+        .pipe(vcf.Vcf.processLines(
               // INFO keys; could also extract them from VCF header if it is well-formed (not always the case...)
               'ALLELEID, 'RS,
               'CLNDN, 'CLNDNINCL, 'CLNDISDB, 'CLNDISDBINCL, 'CLNHGVS, 'CLNREVSTAT,
@@ -78,13 +85,6 @@ object ClinvarVcfDriver {
               'GENEINFO, 'DBVARID, 'ORIGIN, 'MC, 'SSR,
               'AF_ESP, 'AF_EXAC, 'AF_TGP))
         .map(ClinvarVcf.apply _)
-
-      .write(OutputFile)
-
-    ()
-  }
-
-
 }
 
 // ===========================================================================

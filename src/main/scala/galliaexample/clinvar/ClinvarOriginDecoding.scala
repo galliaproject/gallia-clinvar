@@ -1,6 +1,7 @@
 package galliaexample.clinvar
 
-import aptus.Anything_
+import scala.util.chaining._
+import aptus.Anything_ // for .assert
 
 // ===========================================================================
 object ClinvarOriginDecoding {
@@ -42,13 +43,13 @@ object ClinvarOriginDecoding {
   // ===========================================================================
   def breakDownValue(value: Int): Seq[Int] =
      value
-       .toBinaryString            // eg for 11: 1011
-       .reverse                   // eg for 11: 1101
-       .zipWithIndex              // eg for 11: [(1, 0), (1, 1), (0, 2), (1, 3)]
-       .filter(_._1 == '1')       // eg for 11: [(1, 0), (1, 1),       , (1, 3)]
-       .map   (_._2       )       // eg for 11: [    0 ,     1 ,             3 ]
-       .map(math.pow(2, _).toInt) // eg for 11: [    1,      2 ,             8 ] -> the sum of which is indeed 11
-       .thn(subValues =>
+       .toBinaryString             // eg for 11: 1011
+       .reverse                    // eg for 11: 1101
+       .zipWithIndex               // eg for 11: [(1, 0), (1, 1), (0, 2), (1, 3)]
+       .filter(_._1 == '1')        // eg for 11: [(1, 0), (1, 1),       , (1, 3)]
+       .map   (_._2       )        // eg for 11: [    0 ,     1 ,             3 ]
+       .map (math.pow(2, _).toInt) // eg for 11: [    1,      2 ,             8 ] -> the sum of which is indeed 11
+       .pipe(subValues =>
          subValues
            .sorted
            .assert(_ == subValues) /* already be sorted by design */)

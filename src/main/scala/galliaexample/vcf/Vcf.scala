@@ -11,17 +11,17 @@ object Vcf { // 210211093714
     _ .filterBy(_line).matches(!_.startsWith("#"))
 
       .fission(_.string(_line))
-          .as('CHROM, 'POS, 'ID, 'REF, 'ALT, 'QUAL, 'FILTER, 'INFO)
+          .as("CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO")
             .using {
               _ .splitXsv('\t' /* accounts for escaping */)
                 .force.tuple8 }
 
-      .convert('POS).toInt // ID is also an integer but not one meant to be used as such
-      .removeIfValueFor('QUAL, 'FILTER).is(".")
+      .convert("POS").toInt // ID is also an integer but not one meant to be used as such
+      .removeIfValueFor("QUAL", "FILTER").is(".")
 
       // ---------------------------------------------------------------------------
-      // "untuplify" -> see https://github.com/galliaproject/gallia-core#why-does-the-terminology-sometimes-sound-funny-or-full-on-neological
-      .untuplify2a('INFO)
+      // "deserialize" -> see https://github.com/galliaproject/gallia-core#why-does-the-terminology-sometimes-sound-funny-or-full-on-neological
+      .deserialize2a("INFO")
         .withSplitters( // see VCF specification (eg "RS=1235;ALLELEID=...")
             entriesSplitter = ";",
               entrySplitter = "=")

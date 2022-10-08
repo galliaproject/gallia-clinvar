@@ -1,6 +1,7 @@
 package galliaexample.clinvar
 
-import aptus.{Anything_, String_}
+import scala.util.chaining._
+import aptus.String_ // for .extractGroups utility
 import gallia._
 
 // ===========================================================================
@@ -23,31 +24,31 @@ object ClinvarVcf { // 210102155202
       .remove(RS)
 
           // ---------------------------------------------------------------------------
-          .thn(processDiseaseFields(
+          .pipe(processDiseaseFields(
                 CLNDN   , /* disease name, eg: "Myasthenic_syndrome,_congenital,_8|not_specified"   */
                 CLNDISDB, /* disease db  , eg:        "MedGen:C3808739,OMIM:615120|MedGen:CN169374" */
               newKey = disease))
 
-          .thn(processDiseaseFields(
+          .pipe(processDiseaseFields(
                 CLNDNINCL   , /* disease name INCL - eg "Small_fiber_neuropathy";        "For included Variant: ClinVar's preferred disease name for the concept specified by disease identifiers in CLNDISDB"*/
                 CLNDISDBINCL, /* disease db   INCL - eg "MedGen:C0220754", "OMIM:253260; "For included Variant: Tag-value pairs of disease database name and identifier, e.g. OMIM:NNNNNN" */
               newKey = disease_INCL))
 
           // ---------------------------------------------------------------------------
-          // "untuplify" -> see https://github.com/galliaproject/gallia-core#why-does-the-terminology-sometimes-sound-funny-or-full-on-neological
-          .untuplify1b(CLNSIGINCL ~> 'clinical_significance_for_including)
+          // "deserialize" -> see https://github.com/galliaproject/gallia-core#why-does-the-terminology-sometimes-sound-funny-or-full-on-neological
+          .deserialize1b(CLNSIGINCL ~> 'clinical_significance_for_including)
             .withSplitters(SemanticSeparators.Pipe, SemanticSeparators.Colon)
               .asNewKeys(
                   included_clinvar_variant_id  /* meaning: see 210118100341 */,
                   value                        /* clinical significance */)
 
           // ---------------------------------------------------------------------------
-          .untuplify1b(GENEINFO ~> 'genes)
+          .deserialize1b(GENEINFO ~> 'genes)
             .withSplitters(SemanticSeparators.Pipe, SemanticSeparators.Colon)
               .asNewKeys(symbol, entrez)
 
           // ---------------------------------------------------------------------------
-          .untuplify1b(MC ~> 'molecular_consequences)
+          .deserialize1b(MC ~> 'molecular_consequences)
             // inconsistently using pipe here as tuple separator, eg "SO:0001583|missense_variant,SO:0001623|5_prime_UTR_variant" */
             .withSplitters(SemanticSeparators.Comma, SemanticSeparators.Pipe)
               .asNewKeys(
@@ -55,19 +56,19 @@ object ClinvarVcf { // 210102155202
                   /* molecular_consequence */ 'name) // eg "missense_variant"
 
           // ---------------------------------------------------------------------------
-          .untuplify1b(CLNVI)
+          .deserialize1b(CLNVI)
             .withSplitters(SemanticSeparators.Pipe, EntrySplitter)
               .asNewKeys(name, id /* mostly internal IDs */)
 
           // ---------------------------------------------------------------------------
-          .untuplify1b(CLNSIGCONF) // eg "Likely_pathogenic(3)%3BPathogenic(1)%3BUncertain_significance(2)"
+          .deserialize1b(CLNSIGCONF) // eg "Likely_pathogenic(3)%3BPathogenic(1)%3BUncertain_significance(2)"
             .withSplitters(
                 arraySplitter = "%3B", // see br210112171706 for comma; TODO: figure out the (\d) part, only a 5 distinct values if not for these
                   entriesSplitter = _.extractGroups(ConflictsRegex).get)
               .asNewKeys(value, count)
 
           // ---------------------------------------------------------------------------
-          .convert  (SSR).toNonRequired
+          .convert  (SSR).toOptional
           .translate(SSR) // "Variant Suspect Reason Codes. One or more of the following values may be added">
             .usingStrict(SsrMapping) // TODO: how come never actually summed, unlike ORIGIN? really only 1, 16 and 17 in just a handful of values...
 
@@ -91,9 +92,9 @@ object ClinvarVcf { // 210102155202
                 'AF_EXAC ~>  EXAC , // allele frequencies from ExAC
                 'AF_TGP  ~> `1KGP`) // allele frequencies from KGP
               .under        ('AF)
-            .convert        ('AF).toNonRequired           // won't be required after t210122162650 is addressed
-            .transformObject('AF).using {
-              _ .convert(ESP, EXAC, `1KGP`).toNonRequired // won't be required after t210122162650 is addressed
+            .convert        ('AF).toOptional           // won't be required after t210122162650 is addressed
+            .transformEntity('AF).using {
+              _ .convert(ESP, EXAC, `1KGP`).toOptional // won't be required after t210122162650 is addressed
                 .forLeafPaths(_.convert(_).toDouble) }
 
           // ---------------------------------------------------------------------------
@@ -111,15 +112,15 @@ object ClinvarVcf { // 210102155202
           .splitBy(SemanticSeparators.Pipe)
             .underNewKey(newKey)
 
-      .convert(newKey.value).toNonRequired // eg disease_INCL...
+      .convert(newKey.value).toOptional // eg disease_INCL...
 
       // ---------------------------------------------------------------------------
-      .transform(_.objz(newKey.value)).using {
+      .transform(_.entities(newKey.value)).using {
           // eg "MedGen:C3808739,OMIM:615120" - "Tag-value pairs of disease database name and identifier, e.g. OMIM:NNNNNN"
           _ .removeIfValueFor('terms).is(".")
 
-            // "untuplify" -> see https://github.com/galliaproject/gallia-core#why-does-the-terminology-sometimes-sound-funny-or-full-on-neological
-            .untuplify1b('terms)
+            // "deserialize" -> see https://github.com/galliaproject/gallia-core#why-does-the-terminology-sometimes-sound-funny-or-full-on-neological
+            .deserialize1b('terms)
               .withSplitters(SemanticSeparators.Comma, EntrySplitter)
                 .asNewKeys(database, id) }
 
