@@ -3,7 +3,9 @@ import sbt.Keys._
 
 // ===========================================================================
 object GalliaCommonSettings {
+  val CurrentGalliaVersion = "0.4.0"
 
+  // ---------------------------------------------------------------------------
   val mainSettings = Seq(
     organizationHomepage := Some(url("https://github.com/galliaproject")),
     startYear            := Some(2021),
@@ -14,7 +16,7 @@ object GalliaCommonSettings {
         email = "contact.galliaproject@gmail.com",
         url   = url("https://github.com/anthony-cros") )),
 
-    // ---------------------------------------------------------------------------		  
+    // ---------------------------------------------------------------------------
          scalaVersion  := GalliaScalaVersions.supported.head,
     crossScalaVersions := GalliaScalaVersions.supported)
 
